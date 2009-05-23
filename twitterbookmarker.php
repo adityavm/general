@@ -6,7 +6,7 @@
 	$last_count = file_get_contents('lastFetch');
 	$tweets = json_decode(file_get_contents("http://USERNAME:PASSWORD@twitter.com/statuses/friends_timeline.json?since_id=$last_count&count=50"), true);
 	$id = $tweets[0]['id'];
-	$blacklist_users = array('ibnlive', 'mrinal', 'stealingsand', 'baxiabhishek', 'arjunghosh', 'ossguy', 'madguy000', 'thinkgeek', 'freddurst', 'singpolyma', 'ankurb');
+	$blacklist_users = array();
 	$blacklist_domains = array('twitpic', 'ow.ly', 'techcrunch', 'last.fm', 'jsmag');
 	
 	foreach($tweets as $tweet):

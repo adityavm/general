@@ -4,13 +4,13 @@
 	header("Content-type:text/plain");
 	
 	$last_count = file_get_contents('lastFetch');
-	$tweets = json_decode(file_get_contents("http://TWITTER_USERNAME:TWITTER_PASSWORD@twitter.com/statuses/friends_timeline.json?since_id=$last_count&count=50"), true);
+	$tweets = json_decode(file_get_contents("http://USERNAME:PASSWORD@twitter.com/statuses/friends_timeline.json?since_id=$last_count&count=50"), true);
 	$id = $tweets[0]['id'];
-	$blacklist_users = array();
-	$blacklist_domains = array();
+	$blacklist_users = array('ibnlive', 'mrinal', 'stealingsand', 'baxiabhishek', 'arjunghosh', 'ossguy', 'madguy000', 'thinkgeek', 'freddurst', 'singpolyma', 'ankurb');
+	$blacklist_domains = array('twitpic', 'ow.ly', 'techcrunch', 'last.fm', 'jsmag');
 	
 	foreach($tweets as $tweet):
-		if(in_array($tweet['user']['screen_name'], $blacklist))
+		if(in_array($tweet['user']['screen_name'], $blacklist_users))
 			continue;
 		
 		$s = $tweet['text'];
@@ -27,14 +27,14 @@
 			curl_exec($ch);
 			$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 			$host = parse_url($url);
-				$host = str_ireplace(array(".com", ".org", ".net"), "", $host['host']);
+				$host = str_ireplace(array(".com", ".org", ".net", "www."), "", $host['host']);
 
-			if(in_array($host, $domains))
+			if(in_array($host, $blacklist_domains))
 				continue;
 				
-			//echo $match[0][0] . "\n" . $url . "\n\n";
+			echo $match[0][0] . "\n" . $url . "\n\n";
 
-			$delicious = file_get_contents("https://DELICIOUS_USERNAME:DELICIOUS_PASSWORD@api.del.icio.us/v1/posts/add?url=". urlencode($url) ."&description=" . urlencode($s) . "&tags=tweet-mark+" . $tweet['user']['screen_name']);
+			$delicious = file_get_contents("https://USERNAME:PASSWORD@api.del.icio.us/v1/posts/add?url=". urlencode($url) ."&description=" . urlencode($s) . "&tags=tweet-mark+" . $tweet['user']['screen_name']);
 			$return = simplexml_load_string($delicious);
 			if($return->attributes()->code != 'done')
 				file_put_contents('tweetMarksError', "$s\n" . $return->attributes()->code . "\n\n");

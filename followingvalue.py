@@ -1,25 +1,23 @@
+"""
++1 if one hashtag in tweet, -0.5 for every hashtag after the first one // categorisation, easier discoverability of tweet
++1 for any mentions // promoting and helping discover new users
++1 for every link // promoting content, new stuff
++1 if a retweet // proper attribution
+"""
+
 import simplejson, base64, urllib, urllib2, re, time, threading, sys
 
-if sys.argv[1] == "--help":
-	print """Calculate the value of the people you're following
+try:
+	if sys.argv[1] == '--help':
+		print """Calculate the value of the people you're following
 by running some basic rule-based analysis of their
 last 200 tweets.
 
-	Rules
-	=====
-	+1 if one hashtag in tweet, -0.5 for every hashtag after the first one // categorisation, easier discoverability of tweet
-	+1 for any mentions // promoting and helping discover new users
-	+1 for every link // promoting content, new stuff
-	+1 if a retweet // proper attribution
-
-Requires: simplejson
-Usage: python followingvalue.py <username> <password>
-"""
-	exit()
-
-try:
-	u = sys.argv[1]
-	p = sys.argv[2]
+Requires: simplejson"""
+		exit()
+	else:
+		u = sys.argv[1]
+		p = sys.argv[2]
 except:
 	print "Usage: python followingvalue.py <username> <password>\nType 'python followingvalue.py --help' for additional information."
 	exit()

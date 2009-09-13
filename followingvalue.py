@@ -103,6 +103,8 @@ try:
 except Exception:
 	print errno
 
+print "\nCalling them dragons ... \n"
+
 for i in simplejson.loads(response.read()):
 	thread = GenerateValue(i)
 	thread.start()

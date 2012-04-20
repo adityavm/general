@@ -1,9 +1,11 @@
 """
-Checks specified Github private feed every 60 seconds
-and notifies via Growl if there's any new activity
+Checks specified Github private feed every 5 mins
+and notifies via Growl if there's any new activity.
 
 by Aditya Mukherjee 
 """
+# TODO use Github API?
+# TODO different titles for different activity type
 
 import sys
 from time import sleep
@@ -42,6 +44,6 @@ def get_latest():
 					sticky = False,
 				)
 		last_id = feed.entries[0].id # this is the latest notification sent
-		sleep(60)
+		sleep(300)
 
 get_latest()

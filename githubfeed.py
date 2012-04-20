@@ -4,7 +4,6 @@ and notifies via Growl if there's any new activity.
 
 by Aditya Mukherjee 
 """
-# TODO use Github API?
 # TODO different titles for different activity type
 
 import sys
@@ -31,7 +30,6 @@ def get_latest():
 
 		for i in feed.entries[0:10]: # limit to 10
 			# if this entry's id matches the last notification id, stop
-			print(last_id, i.id)
 			if i.id == last_id:
 				break
 			else:
@@ -42,6 +40,7 @@ def get_latest():
 					description = i.title,
 					icon = i.media_thumbnail[0]['url'],
 					sticky = False,
+					callback = i.link,
 				)
 		last_id = feed.entries[0].id # this is the latest notification sent
 		sleep(300)

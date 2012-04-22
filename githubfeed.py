@@ -7,10 +7,13 @@ by Aditya Mukherjee
 # TODO different titles for different activity type
 
 import sys
-from time import sleep
+import thread
+import requests
 import feedparser
 import gntp.notifier
-from pprint import pprint
+from urlparse import urlparse
+#from pprint import pprint
+from time import sleep
 
 last_id = None
 
@@ -21,7 +24,34 @@ growl = gntp.notifier.GrowlNotifier(
 )
 growl.register()
 
+def notify(title, icon, callback):
+	"""
+		outsource the actual notification to this function
+		so that I can take my own time fetching the icon
+	"""
+	url = urlparse(icon)
+	params = dict([part.split('=') for part in url.query.split('&')])
+
+	# break down the url and reconstruct a proper one
+	icon_url = "%s://%s%s" % (url.scheme, url.netloc, url.path)
+	icon_url = "%s?s=60&d=%s" % (icon_url, params['d'])
+
+	r = requests.get(icon_url).content
+
+	growl.notify(
+		noteType = "New Activity",
+		title = "Github Activity",
+		description = title,
+		icon = r, # binary data because URL support was removed in 1.3.3 (http://j.mp/JZ00Vu)
+		sticky = False,
+		callback = callback,
+	)
+
 def get_latest():
+	"""
+		fetches the feed and passes appropriate data
+		to `notify` in a new thread
+	"""
 	global last_id
 
 	while(1):
@@ -34,14 +64,7 @@ def get_latest():
 				break
 			else:
 				# notify
-				growl.notify(
-					noteType = "New Activity",
-					title = "Github Activity",
-					description = i.title,
-					icon = i.media_thumbnail[0]['url'],
-					sticky = False,
-					callback = i.link,
-				)
+				thread.start_new_thread(notify, (i.title, i.media_thumbnail[0]['url'], i.link))
 		last_id = feed.entries[0].id # this is the latest notification sent
 		sleep(300)
 

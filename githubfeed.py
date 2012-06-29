@@ -12,7 +12,6 @@ import requests
 import feedparser
 import gntp.notifier
 from urlparse import urlparse
-#from pprint import pprint
 from time import sleep
 
 last_id = None
@@ -26,9 +25,10 @@ growl.register()
 
 def notify(title, icon, callback):
 	"""
-		outsource the actual notification to this function
-		so that I can take my own time fetching the icon
+	Outsource the actual notification to this function
+	so that I can take my own time fetching the icon.
 	"""
+
 	url = urlparse(icon)
 	params = dict([part.split('=') for part in url.query.split('&')])
 
@@ -40,7 +40,7 @@ def notify(title, icon, callback):
 
 	growl.notify(
 		noteType = "New Activity",
-		title = "Github Activity",
+		title = "Github",
 		description = title,
 		icon = r, # binary data because URL support was removed in 1.3.3 (http://j.mp/JZ00Vu)
 		sticky = False,
@@ -49,9 +49,10 @@ def notify(title, icon, callback):
 
 def get_latest():
 	"""
-		fetches the feed and passes appropriate data
-		to `notify` in a new thread
+	Fetches the feed and passes appropriate data
+	to `notify` in a new thread.
 	"""
+
 	global last_id
 
 	while(1):
